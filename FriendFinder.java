@@ -43,14 +43,14 @@ public class FriendFinder {
 			List<Student> students = studentsDataSource.getStudents(myClass);
 			
 			if (students == null) {
-				continue;
+				return Collections.emptySet();
 			}
 			for (Student otherStudent : students) {
 				
 				// find the other classes that they're taking
 				List<String> theirClasses = classesDataSource.getClasses(otherStudent.getName());
 				if (theirClasses == null) {
-					continue;
+					return Collections.emptySet();
 				}
 							
 				// see if all of the classes that they're taking are the same as the ones this student is taking
