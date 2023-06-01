@@ -31,31 +31,45 @@ public class FriendFinder {
 		
 		// find the classes that this student is taking
 		List<String> myClasses = classesDataSource.getClasses(name);
-		if (myClasses == null) {
+		if (myClasses == null || myClasses.isEmpty()) {
 			return Collections.emptySet(); // return empty Set if the student isn't taking any classes
 		}
-		
+
 		// use the classes to find the names of the students
 		Set<String> classmates = new HashSet<String>();
 		
 		for (String myClass : myClasses) {
+			
+			if (myClass == null) {
+				continue; // ignore if myClass is null
+			}
 			// list all the students in the class
 			List<Student> students = studentsDataSource.getStudents(myClass);
 			
+			// if there is an inconsistency and a class that I am supposedly taking 
+			// does not have any students, return an empty set
 			if (students == null) {
 				return Collections.emptySet();
 			}
 			for (Student otherStudent : students) {
 				
+				if (otherStudent == null) {
+					continue; // ignore if otherStudent null
+				}
 				// find the other classes that they're taking
 				List<String> theirClasses = classesDataSource.getClasses(otherStudent.getName());
+				// if there is an inconsistency in the data and a student who supposedly 
+				// participating in myClass is not taking any classes, we ignore this student
 				if (theirClasses == null) {
-					return Collections.emptySet();
+					continue;
 				}
 							
 				// see if all of the classes that they're taking are the same as the ones this student is taking
 				boolean allSame = true;
 				for (String c : myClasses) {
+					if (c == null) {
+						continue; // ignore if class is null
+					}
 					if (theirClasses.contains(c) == false) {
 						allSame = false;
 						break;
